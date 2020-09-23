@@ -29,70 +29,70 @@ var db = firebase.database();
 // CREATE REWIEW
 
 var reviewForm = document.getElementById('reviewForm');
-var fullName   = document.getElementById('fullName');
-var message    = document.getElementById('message');
+var titlePost   = document.getElementById('titlePost');
+var description    = document.getElementById('description');
 var hiddenId   = document.getElementById('hiddenId');
 
 reviewForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
-  if (!fullName.value || !message.value) return null
+  if (!titlePost.value || !description.value) return null
 
   var id = hiddenId.value || Date.now()
 
-  db.ref('reviews/' + id).set({
-    fullName: fullName.value,
-    message: message.value
+  db.ref('posts/' + id).set({
+    titlePost: titlePost.value,
+    description: description.value
   });
 
-  fullName.value = '';
-  message.value  = '';
+  titlePost.value = '';
+  description.value  = '';
   hiddenId.value = '';
 });
 
 // READ REVEIWS
 
-var reviews = document.getElementById('reviews');
-var reviewsRef = db.ref('/reviews');
+var posts = document.getElementById('posts');
+var postsRef = db.ref('/posts');
 
-reviewsRef.on('child_added', (data) => {
+postsRef.on('child_added', (data) => {
   var li = document.createElement('li')
   li.id = data.key;
   li.innerHTML = reviewTemplate(data.val())
-  reviews.appendChild(li);
+  posts.appendChild(li);
 });
 
-reviewsRef.on('child_changed', (data) => {
+postsRef.on('child_changed', (data) => {
   var reviewNode = document.getElementById(data.key);
   reviewNode.innerHTML = reviewTemplate(data.val());
 });
 
-reviewsRef.on('child_removed', (data) => {
+postsRef.on('child_removed', (data) => {
   var reviewNode = document.getElementById(data.key);
   reviewNode.parentNode.removeChild(reviewNode);
 });
 
-reviews.addEventListener('click', (e) => {
+posts.addEventListener('click', (e) => {
   var reviewNode = e.target.parentNode
 
   // UPDATE REVEIW
   if (e.target.classList.contains('edit')) {
-    fullName.value = reviewNode.querySelector('.fullName').innerText;
-    message.value  = reviewNode.querySelector('.message').innerText;
+    titlePost.value = reviewNode.querySelector('.titlePost').innerText;
+    description.value  = reviewNode.querySelector('.description').innerText;
     hiddenId.value = reviewNode.id;
   }
 
   // DELETE REVEIW
   if (e.target.classList.contains('delete')) {
     var id = reviewNode.id;
-    db.ref('reviews/' + id).remove();
+    db.ref('posts/' + id).remove();
   }
 });
 
-function reviewTemplate({fullName, message}) {
+function reviewTemplate({titlePost, description}) {
   return `
-    <div class='fullName'>${fullName}</div>
-    <div class='message'>${message}</div>
+    <div class='titlePost'>${titlePost}</div>
+    <div class='description'>${description}</div>
     <button class='delete'>Delete</button>
     <button class='edit'>Edit</button>
   `

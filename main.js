@@ -40,7 +40,7 @@ reviewForm.addEventListener('submit', (e) => {
 
   var id = hiddenId.value || Date.now()
 
-  db.ref('posts/' + id).set({
+  db.ref('reviews/' + id).set({
     titlePost: titlePost.value,
     description: description.value
   });
@@ -53,21 +53,21 @@ reviewForm.addEventListener('submit', (e) => {
 // READ REVEIWS
 
 var posts = document.getElementById('posts');
-var postsRef = db.ref('/posts');
+var reviewsRef = db.ref('/posts');
 
-postsRef.on('child_added', (data) => {
-  var li = document.createElement('li')
+reviewsRef.on('child_added', (data) => {
+  var li = document.createElement('tr')
   li.id = data.key;
   li.innerHTML = reviewTemplate(data.val())
   posts.appendChild(li);
 });
 
-postsRef.on('child_changed', (data) => {
+reviewsRef.on('child_changed', (data) => {
   var reviewNode = document.getElementById(data.key);
   reviewNode.innerHTML = reviewTemplate(data.val());
 });
 
-postsRef.on('child_removed', (data) => {
+reviewsRef.on('child_removed', (data) => {
   var reviewNode = document.getElementById(data.key);
   reviewNode.parentNode.removeChild(reviewNode);
 });

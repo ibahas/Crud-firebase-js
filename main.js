@@ -40,7 +40,7 @@ reviewForm.addEventListener('submit', (e) => {
 
   var id = hiddenId.value || Date.now()
 
-  db.ref('reviews/' + id).set({
+  db.ref('posts/' + id).set({
     titlePost: titlePost.value,
     description: description.value
   });
